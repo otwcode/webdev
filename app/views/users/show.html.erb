@@ -1,0 +1,46 @@
+<p>
+  <b>Login:</b>
+  <%=h @user.login %>
+</p>
+
+<p>
+  <b>Google Code Login:</b>
+  <%=h @user.google_code_login %>
+</p>
+
+<% if current_user == @user || current_user.try(:admin)%>
+<p>
+  <b>Google Code password:</b>
+  <%=h @user.google_code_password %>
+</p>
+<p>
+  <b>email:</b>
+  <%=h @user.email %>
+</p>
+<p>
+  <b>webdav url:</b>
+  <a href="<%=h @user.login %>.archiveofourown.org/webdav/"><%=h @user.login %>.archiveofourown.org/webdav/</a>
+</p>
+<p>
+  <b>webdav password:</b>
+  <%=h @user.visible_password %>
+</p>
+<% if current_user.try(:admin) %>
+<p>
+  <b>session secret:</b>
+  <%=h @user.session_secret %>
+</p>
+<% end %>
+<% end %>
+
+<p>
+
+<% if current_user %>
+  <%= link_to 'Edit', edit_user_path(@user) %> |
+  <%= link_to 'Logout', logout_path %>
+<% else %>
+  <%= link_to 'New user', new_user_path %> |
+  <%= link_to 'Login', new_user_session_path %>
+<% end %>
+| <%= link_to 'All users', users_path %>
+</p>

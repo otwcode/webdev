@@ -1,4 +1,9 @@
 log/*.log
 tmp/**/*
+tmp/*
 doc/api
 doc/app
+.ssh
+.mysql_history
+.bash*
+.viminfo

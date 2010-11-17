@@ -1,0 +1,152 @@
+<%= @user.login %> has requested a webdev.
+
+
+please check http://code.google.com/u/<%= @user.google_code_login %>/
+
+to verify that they have commiter role on otwarchive
+
+
+
+whenever you need to enter a password for the user, enter:
+
+<%= @user.visible_password %>
+
+Most of the rest can be copied and pasted. (Note: RT strips formatting which breaks the .yml files. Copy and paste from the your email not from the web). You'll need to copy and paste in chuncks, sometimes you'll need to add a password, and sometimes you'll need to control-D to end a cat.
+
+on tao:
+
+set up a CNAME for dev in /etc/bind/db.archiveofourown.org
+
+<%= @user.login %>		IN	CNAME		dev.archiveofourown.org.
+
+don't forget to update the Serial number and run rndc reload
+
+
+on dev:
+
+sudo su -
+
+useradd -m -g coders <%= @user.login %>
+passwd <%= @user.login %>
+
+mkdir /home/<%= @user.login %>/tmp
+chown <%= @user.login %> /home/<%= @user.login %>/tmp
+htdigest /etc/apache2/auths/digest <%= @user.login %> <%= @user.login %>
+
+cat > /home/<%= @user.login %>/sphinx.yml
+
+test: 
+   allow_star: true 
+   min_prefix_len: 1 
+   min_infix_len: 0 
+   max_matches: 1000
+   mem_limit: 256M
+   port: 1399
+   sql_range_step: 10000000
+production: 
+   allow_star: true 
+   min_prefix_len: 1 
+   min_infix_len: 0 
+   max_matches: 1000
+   mem_limit: 256M
+development: 
+   allow_star: true 
+   min_prefix_len: 1 
+   min_infix_len: 0 
+   max_matches: 1000
+   mem_limit: 256M
+   port: <%= Dir.entries("/home").size + 1501 %>
+
+cat > /home/<%= @user.login %>/local.yml
+
+SESSION_KEY: "_<%= @user.login %>_session"
+SESSION_SECRET: "<%= @user.session_secret %>"
+ERROR_ADDRESS: errors@archiveofourown.org
+ERROR_PREFIX: "[<%= @user.login %>] "
+APP_URL: http://<%= @user.login %>.archiveofourown.org
+APP_NAME: ******TEST <%= @user.login %>******
+
+cat > /home/<%= @user.login %>/database.yml
+
+defaults: &defaults
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_general_ci
+  username: <%= @user.login %>
+  password: <%= @user.visible_password %>
+development:
+  database: <%= @user.login %>_development
+  <<: *defaults
+test: 
+  database: <%= @user.login %>_test
+  <<: *defaults
+
+chown <%= @user.login %> /home/<%= @user.login %>/*.yml
+chmod 600 /home/<%= @user.login %>/database.yml
+mysql -e "create user '<%= @user.login %>'@'localhost' identified by '<%= @user.visible_password %>';"
+mysql -e "grant all on <%= @user.login %>_development.* to '<%= @user.login %>'@'localhost';"
+mysql -e "grant all on <%= @user.login %>_test.* to '<%= @user.login %>'@'localhost';"
+
+cat > /etc/apache2/sites-available/<%=h @user.login %>
+
+<VirtualHost *:80>
+        AssignUserID <%= @user.login %> coders
+        ServerName <%= @user.login %>.archiveofourown.org
+	ServerAdmin systems-errors@transformativeworks.org
+        AllowEncodedSlashes On
+        PassengerAllowEncodedSlashes on
+	DocumentRoot /home/<%= @user.login %>/otwarchive/public
+        PassengerUploadBufferDir /home/<%= @user.login %>/tmp
+        RackEnv development
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /home/<%= @user.login %>/otwarchive >
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+                Deny from env=bot
+	</Directory>
+	ErrorLog /var/log/apache2/<%= @user.login %>_error.log
+	LogLevel warn
+	CustomLog /var/log/apache2/<%= @user.login %>_access.log combined
+	Alias /webdav /home/<%= @user.login %>/otwarchive
+        <Location /webdav >
+          PassengerEnabled off
+          DAV On
+          AuthType Digest
+          AuthName "<%= @user.login %>"
+          AuthUserFile  /etc/apache2/auths/digest
+          Require valid-user
+        </Location>
+        <DirectoryMatch "^/.*/.svn/*">
+         Order deny,allow
+         Deny from all
+        </DirectoryMatch>
+</VirtualHost>
+
+a2ensite <%= @user.login %>
+apache2ctl -t
+
+apache2ctl graceful
+
+<% unless @user.google_code_password.blank? %>
+su - <%=h @user.login %>
+svn checkout https://otwarchive.googlecode.com/svn/trunk/ otwarchive --username <%=h @user.google_code_login %>
+
+if prompted, enter:
+
+<%=h @user.google_code_password %>
+
+cp *.yml otwarchive/config/
+
+cd otwarchive
+rake db:otwseed
+rake db:otwseed  # it always fails the first time for some reason
+rake db:migrate
+rake After
+<% end %>
+
+Reply to this email with the link: http://wiki.transformativeworks.org/mediawiki/Archive_Development_Environment#User_Instructions

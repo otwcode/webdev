@@ -1,0 +1,52 @@
+<h1>Editing user</h1>
+<p>
+<b>Note! if you change your username or (not-visible) password it will change immediately, but only for logging in to this interface. For anything else, a request will be sent and you will get an email when it is changed."</b></p>
+
+
+<% form_for(@user) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :login %><br />
+    <%= f.text_field :login %>
+  </p>
+  <p>
+    <%= f.label :visible_password %> (for logging in to the server via ssh, the webdav, or mysql - do not use a password you use elsewhere)<br />
+    <%= f.text_field :visible_password %>
+  </p>
+  <p>
+    <%= f.label :google_code_login %><br />
+    <%= f.text_field :google_code_login %>
+  </p>
+  <p>The following is not required, but entering it allows us to do the initial chekcout of your code.
+This is not your gmail password, this is the password you see at <a href="https://code.google.com/hosting/settings">https://code.google.com/hosting/settings</a>
+</p>
+  <p>
+    <%= f.label :google_code_password %><br />
+    <%= f.text_field :google_code_password %>
+  </p>
+  <p>
+    <%= f.label :email %><br />
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    <%= f.label :password %> (leave blank if you don't want to change it)<br />
+    <%= f.password_field :password %>
+  </p>
+  <p>
+    <%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation %>
+  </p>
+  <% if current_user.admin? %>
+    <p>
+        <%= f.label :admin %><br />
+        <%= f.check_box :admin %>
+      </p>
+  <% end %>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @user %> |
+<%= link_to 'Back', users_path %>
