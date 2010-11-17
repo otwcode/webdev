@@ -1,0 +1,8 @@
+%h1 Editing user
+%p
+  %b Note! 
+  If you are reqesting a change to your name or visible password, a systems person will need to do this manually.
+= render :partial => 'form'
+= link_to 'Show', @user
+|
+= link_to 'All users', users_path

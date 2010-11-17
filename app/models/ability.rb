@@ -10,6 +10,7 @@ class Ability
         u && u == user
       end
     else
+      can :read, :all
       can :create, User
     end
   end

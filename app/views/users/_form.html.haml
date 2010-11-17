@@ -1,0 +1,66 @@
+- form_for(@user) do |f|
+  -if @user.errors.any?
+    #red
+      %h2= "#{pluralize(@user.errors.count, "error")} prohibited this user from being saved:"
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+  %dl
+    %dt
+      = f.label :login, "Name"
+    %dd
+      = f.text_field :login
+      %br
+      visible to everyone
+      %br
+      short, lower case, and no spaces
+      %br
+      should be similar to what you use in campfire
+      %br
+      will be the subdomain in your URL
+    %dt
+      = f.label :google_code_login, "Google code login"
+    %dd
+      = f.text_field :google_code_login
+      %br
+      visible to everyone
+      %br
+      as used in 
+      %a(href="https://code.google.com/p/otwarchive/people/list") otwarchive
+      or
+      %a(href="https://code.google.com/p/otwtraining/people/list") otwtraining
+    %dt
+      = f.label :visible_password
+    %dd
+      = f.text_field :visible_password
+      %br
+      visible to Systems
+      %br
+      used to log in via ssh and webdav
+    %dt 
+      = f.label :email
+    %dd
+      = f.text_field :email
+      %br
+      visible to Systems
+      %br
+      required so we can contact you about your webdev
+    %dt
+      = f.label :password
+    %dd
+      = f.password_field :password
+      %br
+      for this web interface only. 
+      %br
+      private, and should be something you will remember
+    %dt
+      = f.label :password_confirmation, "Confirmation"
+    %dd
+      = f.password_field :password_confirmation
+    - if current_user.try(:admin?)
+      %dt
+        = f.label :admin
+      %dd
+        = f.check_box :admin
+  %p
+    = f.submit 'Submit'

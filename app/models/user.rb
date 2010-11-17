@@ -11,7 +11,8 @@ class User < ActiveRecord::Base
     :with => Regexp.new(/^[a-zA-Z0-9]{3,16}$/), 
     :message => "must be 3-16 characters: alphanumeric only."
 
-  def before_create
+  before_create :create_session
+  def create_session
     if self.session_secret.blank?
       alphanumerics = [('0'..'9'),('A'..'Z'),('a'..'z')].map {|range| range.to_a}.flatten
       self.session_secret = (0...100).map { alphanumerics[Kernel.rand(alphanumerics.size)] }.join

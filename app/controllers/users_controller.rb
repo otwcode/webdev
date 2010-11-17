@@ -1,21 +1,19 @@
 class UsersController < ApplicationController
+  load_and_authorize_resource
 
   def index
     @users = User.all
   end
 
   def show
-    @user = User.find(params[:id])
   end
 
   def new
     @user = User.new
-    unauthorized! if cannot? :create, @user
   end
 
   def create
     @user = User.new(params[:user])
-    unauthorized! if cannot? :create, @user
     if @user.save
       if current_user && current_user.admin? 
         @user.update_attribute(:admin, params[:user][:admin])
@@ -28,13 +26,9 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
-    unauthorized! if cannot? :update, @user
   end
 
   def update
-    @user = User.find(params[:id])
-    unauthorized! if cannot? :update, @user
     if @user.update_attributes(params[:user])
       if current_user && current_user.admin? 
         @user.update_attribute(:admin, params[:user][:admin])
@@ -48,9 +42,22 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user = User.find(params[:id])
-    unauthorized! if cannot? :destroy, @user
     @user.destroy
     redirect_to(users_url)
+  end
+
+  # so can view mailer request later
+  # not currently linked anywhere
+  # visible to admin onl
+  def mailer_request
+    render 'user_mailer/request', :layout => false and return
+  end
+  def mailer_update
+    render 'user_mailer/update', :layout => false and return
+  end
+
+  private
+  def load_user
+    @user = User.find(params[:id])
   end
 end
