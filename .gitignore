@@ -8,3 +8,5 @@ doc/app
 .mysql_history
 .bash*
 .viminfo
+.bundler
+.gem
