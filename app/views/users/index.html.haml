@@ -6,21 +6,26 @@
     = link_to 'Login', new_user_session_path
 %table(summary="users")
   %tr
-    %th GCode
     %th Webdev
+    %th GCode
   - @users.each do |user|
     %tr
       %td
-        %a{:href => "http://code.google.com/u/#{h user.google_code_login}/updates"}>
-          = user.google_code_login
-      %td
         %a{:href => "http://#{user.login}.archiveofourown.org"}
           = user.login
+      %td
+        %a{:href => "http://code.google.com/u/#{h user.google_code_login}/updates"}>
+          = user.google_code_login
       - if current_user == user || current_user.try(:admin)
         %td
           = link_to 'Show', user
         %td
           = link_to 'Edit', edit_user_path(user)
+      - if current_user.try(:admin)
+        %td
+          = link_to 'Request', mailer_request_user_path(user)
+        %td
+          = link_to 'Update', mailer_update_user_path(user)
 %br
 - if current_user
   = link_to 'Logout', logout_path

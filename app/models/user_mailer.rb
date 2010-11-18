@@ -1,18 +1,10 @@
 class UserMailer < ActionMailer::Base
-  def request(recipient, user)
-    subject       "Webdev Request"
-    recipients    recipient
-    from          user.email
-    sent_on       Time.now
-    content_type  "text/plain"
-    body          :user => user
+  def new_request(recipient, user)
+    @user = user
+    mail(:to => recipient, :subject => "Webdev Request", :from => user.email)
   end
-  def update(recipient, user)
-    subject       "Webdev UPDATE Request"
-    recipients    recipient
-    from          user.email
-    sent_on       Time.now
-    content_type  "text/plain"
-    body          :user => user
+  def update_request(recipient, user)
+    @user = user
+    mail(:to => recipient, :subject => "Webdev Update Request", :from => user.email)
   end
 end

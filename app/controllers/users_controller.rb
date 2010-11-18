@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @users = User.all
+    @users = User.order('login ASC')
   end
 
   def show
@@ -18,7 +18,8 @@ class UsersController < ApplicationController
       if current_user && current_user.admin? 
         @user.update_attribute(:admin, params[:user][:admin])
       end
-      flash[:notice] = 'User was created. Email sent to admins for setup.'
+      UserMailer.new_request("requests@transformativeworks.org", @user).deliver
+      flash[:notice] = 'User was created. Email sent to Systems for setup.'
       redirect_to(@user)
     else
       render :action => "new"
@@ -33,7 +34,7 @@ class UsersController < ApplicationController
       if current_user && current_user.admin? 
         @user.update_attribute(:admin, params[:user][:admin])
       end
-      UserMailer.deliver_update("ambtus@gmail.com", @user)
+      UserMailer.update_request("ambtus@gmail.com", @user).deliver
       flash[:notice] = 'User was successfully updated.'
       redirect_to(@user)
     else
@@ -46,14 +47,11 @@ class UsersController < ApplicationController
     redirect_to(users_url)
   end
 
-  # so can view mailer request later
-  # not currently linked anywhere
-  # visible to admin onl
   def mailer_request
-    render 'user_mailer/request', :layout => false and return
+    render 'user_mailer/new_request', :layout => false and return
   end
   def mailer_update
-    render 'user_mailer/update', :layout => false and return
+    render 'user_mailer/update_request', :layout => false and return
   end
 
   private

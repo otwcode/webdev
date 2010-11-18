@@ -110,7 +110,7 @@
   %br
   &nbsp;&nbsp;proxy_set_header Host $host;
   %br
-  &nbsp;&nbsp;proxy_redirect false
+  &nbsp;&nbsp;proxy_redirect off;
   %br
   &nbsp;&nbsp;proxy_pass
   = "http://unicorn_#{@user.login};"
