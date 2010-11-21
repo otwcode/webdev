@@ -5,8 +5,8 @@ class User < ActiveRecord::Base
 
   validates_presence_of :google_code_login
   validates_format_of :login,
-    :with => Regexp.new(/^[a-zA-Z0-9]{3,16}$/), 
-    :message => "must be 3-16 characters: alphanumeric only."
+    :with => Regexp.new(/^[a-z0-9]{3,16}$/), 
+    :message => "must be 3-16 characters: lower case alphanumeric only."
   validates_format_of :visible_password,
     :with => Regexp.new(/^[a-zA-Z0-9]{3,16}$/), 
     :message => "must be 3-16 characters: alphanumeric only."
