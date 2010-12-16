@@ -10,3 +10,4 @@ doc/app
 .viminfo
 .bundler
 .gem
+.gitconfig
