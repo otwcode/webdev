@@ -90,7 +90,7 @@
   %br
   = "mysql -e \"grant all on #{@user.login}_test.* to '#{@user.login}'@'localhost';\""
 %blockquote
-  = "cat > /usr/local/nginx/conf/vhosts/#{@user.login}"
+  = "cat > /usr/local/nginx/conf/vhosts/#{@user.login}.conf"
 %blockquote
   = "upstream unicorn_#{@user.login} {"
   %br
