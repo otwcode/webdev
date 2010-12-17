@@ -95,7 +95,7 @@
   = "upstream unicorn_#{@user.login} {"
   %br
   &nbsp;&nbsp;
-  = "unix:/tmp/#{@user.login}.sock fail_timeout=0;"
+  = "server unix:/tmp/#{@user.login}.sock fail_timeout=0;"
   %br
   }
   %br
