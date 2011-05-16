@@ -27,3 +27,7 @@ group :development do
   gem 'hpricot'
   gem 'ruby_parser'
 end
+
+group :production do
+  gem 'unicorn'
+end
