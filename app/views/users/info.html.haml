@@ -1,0 +1,129 @@
+%h2
+  = @user.login
+  has requested a webdev.
+%p
+  Before continuing, please check to verify that the user is a real person (ask ADT chairs if uncertain)
+%h2
+  on tao:
+%p
+  edit /etc/bind/db.archiveofourown.org
+%p
+  set up a CNAME for dev.archiveofourown.org for:
+  %strong= @user.login
+%p update the Serial number and run rndc reload
+%h2
+  on dev:
+%p
+  sudo su -
+  %br
+  = "useradd -m -g coders #{@user.login}"
+  %br
+  = "passwd #{@user.login}"
+  %strong= "# #{@user.visible_password}"
+%p
+  = "cp /home/webdev/sphinx.yml /home/#{@user.login}/sphinx.yml"
+  %br
+  echo "&nbsp;&nbsp;port:
+  = Dir.entries("/home").size + 1501
+  " >>
+  = "/home/#{@user.login}/sphinx.yml"
+%p
+  = "cat > /home/#{@user.login}/local.yml"
+%p
+  = "SESSION_KEY: _#{@user.login}_session"
+  %br
+  = "SESSION_SECRET: #{@user.session_secret}"
+  %br
+  ERROR_ADDRESS: errors@archiveofourown.org
+  %br
+  = "ERROR_PREFIX: [#{@user.login}]"
+  %br
+  = "APP_URL: http://#{@user.login}.archiveofourown.org"
+  %br
+  = "APP_NAME: ******TEST #{@user.login}******"
+  %p
+    %strong ^D
+%p
+  = "cat > /home/#{@user.login}/database.yml"
+%p
+  defaults: &defaults
+  %br
+  &nbsp;&nbsp;adapter: mysql2
+  %br
+  &nbsp;&nbsp;encoding: utf8
+  %br
+  &nbsp;&nbsp;collation: utf8_general_ci
+  %br
+  &nbsp;&nbsp;username:
+  = @user.login
+  %br
+  &nbsp;&nbsp;password:
+  = @user.visible_password
+  %br
+  %br
+  development:
+  %br
+  &nbsp;&nbsp;database:
+  = "#{@user.login}_development"
+  %br
+  &nbsp;&nbsp;<<: *defaults
+  %br
+  %br
+  test:
+  %br
+  &nbsp;&nbsp;database:
+  = "#{@user.login}_test"
+  %br
+  &nbsp;&nbsp;<<: *defaults
+  %p
+    %strong ^D
+%p
+  = "chown #{@user.login} /home/#{@user.login}/*.yml"
+  %br
+  = "chmod 600 /home/#{@user.login}/database.yml"
+  %br
+  = "mysql -e \"create user '#{@user.login}'@'localhost' identified by '#{@user.visible_password}';\""
+  %br
+  = "mysql -e \"grant all on #{@user.login}_development.* to '#{@user.login}'@'localhost';\""
+  %br
+  = "mysql -e \"grant all on #{@user.login}_test.* to '#{@user.login}'@'localhost';\""
+%p
+  = "cat > /usr/local/nginx/conf/vhosts/#{@user.login}.conf"
+%p
+  = "upstream unicorn_#{@user.login} {"
+  %br
+  &nbsp;&nbsp;
+  = "server unix:/tmp/#{@user.login}.sock fail_timeout=0;"
+  %br
+  }
+  %br
+  server {
+  %br
+  &nbsp;&nbsp;server_name
+  = "#{@user.login}.archiveofourown.org;"
+  %br
+  &nbsp;&nbsp;location / {
+  %br
+  &nbsp;&nbsp;proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+  %br
+  &nbsp;&nbsp;proxy_set_header Host $host;
+  %br
+  &nbsp;&nbsp;proxy_redirect off;
+  %br
+  &nbsp;&nbsp;proxy_pass
+  = "http://unicorn_#{@user.login};"
+  %br
+  &nbsp;&nbsp;# unicorn timeout + unicorn backlog time
+  %br
+  &nbsp;&nbsp;proxy_read_timeout 300;
+  %br
+  &nbsp;&nbsp;access_log
+  = "logs/#{@user.login}_unicorn.log upstream;"
+  %br
+  &nbsp;&nbsp;}
+  %br
+  }
+  %p
+    %strong ^D
+%p
+  kill -HUP `cat /usr/local/nginx/logs/nginx.pid`

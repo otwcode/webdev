@@ -1,18 +1,14 @@
 %h1 Login
-= form_for(@user_session) do |f|
-  -if @user_session.errors.any?
-    #red
-      - @user_session.errors.full_messages.each do |msg|
-        %li= msg
+= form_tag user_sessions_path do
   %dl
     %dt
-      = f.label :login
+      = label_tag :login
     %dd
-      = f.text_field :login
+      = text_field_tag :login
     %dt
-      = f.label :password
+      = label_tag :password
     %dd
-      = f.password_field :password
+      = password_field_tag :password
   %p
-    = f.submit 'Log in'
-= link_to 'Back', user_sessions_path
+    = submit_tag 'Log in'
+= link_to 'Back', root_path

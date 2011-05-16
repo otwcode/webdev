@@ -2,8 +2,7 @@ Webdev::Application.routes.draw do
 
   resources :users do
     member do
-      get :mailer_request
-      get :mailer_update
+      get :info
     end
   end
 

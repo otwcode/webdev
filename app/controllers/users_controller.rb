@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    @user = User.find(params[:id])
   end
 
   def new
@@ -47,11 +48,7 @@ class UsersController < ApplicationController
     redirect_to(users_url)
   end
 
-  def mailer_request
-    render 'user_mailer/new_request', :layout => false and return
-  end
-  def mailer_update
-    render 'user_mailer/update_request', :layout => false and return
+  def info
   end
 
   private

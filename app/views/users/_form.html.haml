@@ -19,17 +19,6 @@
       %br
       will be the subdomain in your URL
     %dt
-      = f.label :google_code_login, "Google code login"
-    %dd
-      = f.text_field :google_code_login
-      %br
-      visible to everyone
-      %br
-      as used in 
-      %a(href="https://code.google.com/p/otwarchive/people/list") otwarchive
-      or
-      %a(href="https://code.google.com/p/otwtraining/people/list") otwtraining
-    %dt
       = f.label :visible_password
     %dd
       = f.text_field :visible_password
@@ -50,13 +39,17 @@
     %dd
       = f.password_field :password
       %br
-      for this web interface only. 
+      for this web interface only 
+      %br 
+      not required
       %br
-      private, and should be something you will remember
+      private (not visible to Systems)
     %dt
       = f.label :password_confirmation, "Confirmation"
     %dd
       = f.password_field :password_confirmation
+      %br
+      retype your private password if using
     - if current_user.try(:admin?)
       %dt
         = f.label :admin

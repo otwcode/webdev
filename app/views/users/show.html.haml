@@ -2,9 +2,6 @@
   %b Login:
   = h @user.login
 %p
-  %b Google Code Login:
-  = h @user.google_code_login
-%p
   %b webdav url:
   %a{:href => "http://#{@user.login}.archiveofourown.org/webdav/"}
     = "http://#{@user.login}.archiveofourown.org/webdav/"

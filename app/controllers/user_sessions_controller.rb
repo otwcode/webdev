@@ -1,21 +1,22 @@
 class UserSessionsController < ApplicationController
   def new
-    @user_session = UserSession.new
+    session[:user_id] = nil
   end
 
   def create
-    @user_session = UserSession.new(params[:user_session])
-    if @user_session.save
+    user = User.authenticate(params[:login], params[:password])
+    if user.is_a? User
+      session[:user_id] = user.id
       flash[:notice] = 'Hello.' 
       redirect_to root_url
     else
+      flash.now.alert = "Invalid login or password. Passwords have all been reset. Please ask Sidra for assistance"  
       render :action => "new"
     end
   end
 
   def destroy
-    @user_session = UserSession.find
-    @user_session.destroy
+    session[:user_id] = nil
     flash[:notice] = 'Good-bye.'
     redirect_to root_url
   end
