@@ -1,8 +1,12 @@
 %h2
   = @user.login
+  (
+  = @user.email
+  )
   has requested a webdev.
 %p
-  Before continuing, please check to verify that the user is a real person (ask ADT chairs if uncertain)
+  Before continuing, please check to verify that the user is on the 
+  %a{:href=>"https://secure.transformativeworks.org/mailman/admin/otw-coders/members"} otw-coder's mailing list
 %h2
   on tao:
 %p

@@ -1,10 +1,14 @@
 %h2
   = @user.login
+  (
+  = @user.email
+  )
   has requested a webdev.
 %p
-  Before continuing, please check to verify that the user is a real person (ask ADT chairs if uncertain) 
+  Before continuing, please check to verify that the user is on the 
+  %a{:href=>"https://secure.transformativeworks.org/mailman/admin/otw-coders/members"} otw-coder's mailing list
 %p 
-  Instructions are at
+  Instructions for setting them up are at
   = "http://webdev.archiveofourown.org/users/#{@user.id}/info"
 %p
-  You will need to login to the webdev as an admin. Ask Sidra to set you up as an admin.
+  You will need to login to the webdev as an admin to see the instructions. Ask Sidra to set you up as an admin.
