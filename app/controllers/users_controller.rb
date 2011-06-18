@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @client_ip = request.remote_ip
     @users = User.order('login ASC')
   end
 
