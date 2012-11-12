@@ -25,13 +25,6 @@
   = "passwd #{@user.login}"
   %strong= "# #{@user.visible_password}"
 %p
-  = "cp /home/webdev/sphinx.yml /home/#{@user.login}/sphinx.yml"
-  %br
-  echo "&nbsp;&nbsp;port:
-  = Dir.entries("/home").size + 1501
-  " >>
-  = "/home/#{@user.login}/sphinx.yml"
-%p
   = "cat > /home/#{@user.login}/local.yml"
 %p
   = "SESSION_KEY: _#{@user.login}_session"
