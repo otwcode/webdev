@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 # basic rails gems
 gem 'bundler', '~>1.0.0'
-gem 'rails', '3.0.7'
+gem 'rails', '3.2.17'
 gem 'mysql2', '~>0.2.6'
 gem 'haml'
 
